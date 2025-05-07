@@ -16,35 +16,50 @@
 # 3.  When an LLM connects to the server, the server sends its metadata to the LLM.
 # 4.  The LLM uses this JSON metadata to determine which methods to call, and intelligently chooses the best method to call (or none at all).
 
+## MCP BASICS
+# 1.  Resources: like getters
+# 2.  Tools: functions that execute logic, call server-side actions (file modification, database writes, etc.)
+# 3.  Prompts: (I'm not sure yet, but maybe it's just more context for how to handle a particular request?)
 
 
 
-
+# pip install "mcp[cli]""
 from mcp.server.fastmcp import FastMCP, Context
 
 # Instantiate a minimal MCP server named 'POC'
-mcp = FastMCP("POC Server")
+mcp = FastMCP("Kai's MCP Server")
 
 # -- Resource: Expose simple data
-@mcp.resource("servername://time")
-def get_server_time() -> str:
-    """Return a static identifier for proof of concept"""
-    from datetime import datetime
-    return datetime.utcnow().isoformat() + "Z"
+@mcp.tool("kai://kai_favorite_city")
+def get_favorite_city() -> str:
+    """This function gets Kai's favorite city."""
+    return "Kai's favorite city is 'Miami'"
 
-# -- Tool: Perform an action
-@mcp.tool()
-def echo(message: str) -> str:
-    """Echo back the provided message"""
-    return f"Echo: {message}"
+@mcp.tool("kai://kai_favorite_food")
+def get_favorite_food() -> str:
+    """This function gets Kai's favorite food."""
+    return "Kai's favorite food is 'Cuban sandwiches'"
 
-# -- Prompt: Provide a reusable template
-@mcp.prompt()
-def greet_prompt(name: str) -> str:
-    """Generate a greeting prompt for the LLM"""
-    return f"You are an assistant. Greet {name} enthusiastically!"
+@mcp.tool("kai://sum")
+def sum(a: int, b: int, c: int) -> int:
+    """Sum three integers."""
+    return a + b + c
+
+# # -- Tool: Perform an action
+# @mcp.tool()
+# def echo(message: str) -> str:
+#     """Echo back the provided message"""
+#     return f"Echo: {message}"
+
+# # -- Prompt: Provide a reusable template
+# @mcp.prompt()
+# def greet_prompt(name: str) -> str:
+#     """Generate a greeting prompt for the LLM"""
+#     return f"You are an assistant. Greet {name} enthusiastically!"
 
 # -- Direct execution entrypoint
 if __name__ == "__main__":
-    # Run the server with default configuration
-    mcp.run()  # Blocks and listens for MCP client connections
+    print("Starting MCP server.")
+    mcp.run(bro="fucking run")  # Blocks and listens for MCP client connections
+
+# docker build --no-cache -t mcp . && docker run -p 8000:8000 mcp
