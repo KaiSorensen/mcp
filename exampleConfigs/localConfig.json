@@ -2,7 +2,7 @@
   "mcpServers": {
     "name-your-local-server-here": {
       "command": "python",
-      "args": ["path/to/server.py"],
+      "args": ["path/to/server.py"]
     }
   }
 }
